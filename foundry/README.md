@@ -1,9 +1,3 @@
-Here is the **README** dedicated to setting up the **Azure AI Foundry** infrastructure (formerly Azure AI Studio). This guide uses **Bicep** (Azure's Infrastructure as Code language) to provision the AI Hub, Project, Search, and OpenAI services, and includes CLI commands to deploy the specific models you requested (`gpt-4o-mini` and `text-embedding-3-small`).
-
-# Save this content as `DEPLOY_AI_FOUNDRY.md` in your `infrastructure` folder.
-
----
-
 # Deploy Guide: Azure AI Foundry & Models
 
 This guide details how to provision the core AI infrastructure required for the Chatbot: **Azure AI Foundry (Hub & Project)**, **Azure OpenAI**, and **Azure AI Search**.
