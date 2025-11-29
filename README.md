@@ -109,11 +109,8 @@ _See `multi-agents/flow.dag.yaml` for the workflow logic._
 
 ## Documentation
 
-- [Backend Deployment Guide](https://www.google.com/search?q=backend/README.md)
-- [Frontend Deployment Guide](https://www.google.com/search?q=infrastructure/README.md)
-- [AI Foundry & Model Setup](https://www.google.com/search?q=foundry/README.md)
+- [Backend Deployment Guide](https://github.com/anrkuist/microsoft-hackathon/backend/README.md)
+- [Frontend Deployment Guide](https://anrkuist/microsoft-hackathon/infrastructure/README.md)
+- [AI Foundry & Model Setup](https://anrkuist/microsoft-hackathon/foundry/README.md)
 
-## Contributors
-
-- **Maintainer:** [Your Name/Team Name]
 - **Event:** Microsoft Innovation Hackathon
