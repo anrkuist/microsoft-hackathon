@@ -1,0 +1,192 @@
+inputs:
+  user_query:
+    type: string
+    default: Qual a posição da Maria Silva sobre educação?
+    is_chat_input: false
+  session_id:
+    type: string
+    default: session_dev_01
+    is_chat_input: false
+  user_tier:
+    type: string
+    default: default
+    is_chat_input: false
+outputs:
+  final_response:
+    type: object
+    reference: ${safety_parser.output.final_response}
+nodes:
+  - name: intent_agent
+    type: llm
+    source:
+      type: code
+      path: intent_classifier.jinja2
+    inputs:
+      deployment_name: gpt-4o-mini
+      temperature: 1
+      top_p: 1
+      user_query: ${inputs.user_query}
+    provider: AzureOpenAI
+    connection: aoai_connection
+    api: chat
+    module: promptflow.tools.aoai
+    use_variants: false
+  - name: intent_agent_parser
+    type: python
+    source:
+      type: code
+      path: parse_json.py
+    inputs:
+      llm_output: ${intent_agent.output}
+    use_variants: false
+  - name: rag_retriever
+    type: python
+    source:
+      type: code
+      path: real_rag_retriever.py
+    inputs:
+      openai_connection: aoai_connection
+      entities: ${intent_agent_parser.output.entities}
+      index_name: json-vetorizado
+      intent: ${intent_agent_parser.output.intent}
+      original_query: ${intent_agent_parser.output.original_query}
+      top_k: 3
+    use_variants: false
+  - name: policy_summarizer
+    type: llm
+    source:
+      type: code
+      path: policy_summarizer.jinja2
+    inputs:
+      deployment_name: gpt-4o-mini
+      temperature: 1
+      top_p: 1
+      response_format:
+        type: text
+      entities: ${rag_retriever.output.entities}
+      intent: ${rag_retriever.output.intent}
+      original_query: ${rag_retriever.output.original_query}
+      retrieved_chunks: ${rag_retriever.output.retrieved_chunks}
+    provider: AzureOpenAI
+    connection: aoai_connection
+    api: chat
+    module: promptflow.tools.aoai
+    use_variants: false
+  - name: policy_summarizer_parser
+    type: python
+    source:
+      type: code
+      path: parse_json.py
+    inputs:
+      llm_output: ${policy_summarizer.output}
+    use_variants: false
+  - name: fact_checker
+    type: llm
+    source:
+      type: code
+      path: fact_checker.jinja2
+    inputs:
+      deployment_name: gpt-4o-mini
+      temperature: 0
+      top_p: 1
+      max_tokens: 1000
+      response_format:
+        type: text
+      entities: ${rag_retriever.output.entities}
+      intent: ${rag_retriever.output.intent}
+      original_query: ${rag_retriever.output.original_query}
+      retrieved_chunks: ${rag_retriever.output.retrieved_chunks}
+      summary: ${policy_summarizer_parser.output.summary}
+    provider: AzureOpenAI
+    connection: aoai_connection
+    api: chat
+    module: promptflow.tools.aoai
+    use_variants: false
+  - name: fact_checker_parser
+    type: python
+    source:
+      type: code
+      path: parse_json.py
+    inputs:
+      llm_output: ${fact_checker.output}
+    use_variants: false
+  - name: flow_orchestrator
+    type: python
+    source:
+      type: code
+      path: flow_orchestrator.py
+    inputs:
+      intent: ${rag_retriever.output.intent}
+      summary: ${policy_summarizer_parser.output.summary}
+      verification: ${fact_checker_parser.output.verification}
+    use_variants: false
+  - name: candidate_comparator
+    type: llm
+    source:
+      type: code
+      path: candidate_comparator.jinja2
+    inputs:
+      deployment_name: gpt-4o-mini
+      temperature: 0.2
+      top_p: 1
+      max_tokens: 1000
+      response_format:
+        type: text
+      entities: ${rag_retriever.output.entities}
+      original_query: ${rag_retriever.output.original_query}
+      summary: ${policy_summarizer_parser.output.summary}
+      verification: ${fact_checker_parser.output.verification}
+    provider: AzureOpenAI
+    connection: aoai_connection
+    api: chat
+    module: promptflow.tools.aoai
+    activate:
+      when: ${flow_orchestrator.output.needs_comparison}
+      is: true
+    use_variants: false
+  - name: candidate_comparator_parser
+    type: python
+    source:
+      type: code
+      path: parse_json.py
+    inputs:
+      llm_output: ${candidate_comparator.output}
+    activate:
+      when: ${flow_orchestrator.output.needs_comparison}
+      is: true
+    use_variants: false
+  - name: safety_neutrality_checker
+    type: llm
+    source:
+      type: code
+      path: safety_neutrality_checker.jinja2
+    inputs:
+      deployment_name: gpt-4o-mini
+      temperature: 1
+      top_p: 1
+      response_format:
+        type: text
+      comparison: ${candidate_comparator_parser.output.comparison}
+      entities: ${rag_retriever.output.entities}
+      intent: ${rag_retriever.output.intent}
+      original_query: ${rag_retriever.output.original_query}
+      summary: ${policy_summarizer_parser.output.summary}
+      timestamp: 2025-11-23
+      verification: ${fact_checker_parser.output.verification}
+    provider: AzureOpenAI
+    connection: aoai_connection
+    api: chat
+    module: promptflow.tools.aoai
+    use_variants: false
+  - name: safety_parser
+    type: python
+    source:
+      type: code
+      path: parse_json.py
+    inputs:
+      llm_output: ${safety_neutrality_checker.output}
+    use_variants: false
+node_variants: {}
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt

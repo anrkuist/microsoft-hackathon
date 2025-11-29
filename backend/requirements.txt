@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+httpx
+pydantic
+python-dotenv
+azure-cosmos
+python-jose[cryptography]
+multipart
+passlib[argon2]
+email-validator

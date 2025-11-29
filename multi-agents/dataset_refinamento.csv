@@ -1,0 +1,11 @@
+user_query,expected_intent,expected_answer
+"Qual é a proposta do PSTU sobre o salário do prefeito e dos vereadores?","candidate_position_query","Redução dos salários para igualar ao de um professor; Fim do plano de saúde privado para políticos."
+"O que o programa do PSTU propõe para combater o desemprego no nível municipal?","candidate_position_query","Criação de salário desemprego custeado pelo Município; Crédito a juros zero para pequenos negócios."
+"Qual a posição do PSTU em relação às operações policiais nas favelas?","candidate_position_query","Fim das operações policiais, pois deixam crianças sem aulas."
+"Compare a visão do PSTU e do PCO sobre o transporte público.","candidate_comparison","Semelhança: Ambos defendem Tarifa ZERO. PSTU: Municipalizar e fontes limpas. PCO: Estatização total e fim do lucro empresarial."
+"Qual a diferença na proposta de governança popular entre os dois candidatos?","candidate_comparison","PSTU: Conselho Popular Municipal decide 100% do orçamento. PCO: Conselhos de bairro deliberativos são a base do governo."
+"Como os dois candidatos tratam a questão da dívida pública?","candidate_comparison","PCO: Não pagamento da dívida (central). PSTU: Foco em isenções fiscais e impostos progressivos (não cita calote explícito no texto)."
+"Qual é a proposta dos candidatos para a revitalização do Porto Maravilha?","topic_exploration","Não mencionado. O bot deve informar que não há propostas específicas no texto."
+"O que os candidatos propõem especificamente para o turismo no Cristo Redentor?","topic_exploration","Não mencionado."
+"Quem ganhou a final da Libertadores de 2023?","out_of_scope","Recusa. O bot deve informar que só responde sobre eleições/política."
+"Me ensine uma receita de feijoada carioca.","out_of_scope","Recusa educada."

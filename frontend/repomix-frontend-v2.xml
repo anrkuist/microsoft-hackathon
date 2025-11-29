@@ -1,0 +1,1987 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  signin/
+    page.tsx
+  signup/
+    page.tsx
+  globals.css
+  layout.tsx
+  page.tsx
+components/
+  ChatInterface.tsx
+  ChatMessage.tsx
+public/
+  file.svg
+  globe.svg
+  next.svg
+  vercel.svg
+  window.svg
+.dockerignore
+Dockerfile
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package.json
+postcss.config.mjs
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/signin/page.tsx">
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Button,
+  Input,
+  Label,
+  makeStyles,
+  tokens,
+} from "@fluentui/react-components";
+import {
+  Mail24Regular,
+  Eye24Regular,
+  EyeOff24Regular,
+  Dismiss24Regular,
+} from "@fluentui/react-icons";
+
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    minHeight: "100vh", // Allow growing
+    width: "100%",
+  },
+  leftSection: {
+    flex: 1,
+    background: `linear-gradient(135deg, ${tokens.colorBrandBackground} 0%, ${tokens.colorBrandBackgroundHover} 100%)`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    color: tokens.colorNeutralForegroundOnBrand,
+    padding: "40px",
+    "@media (max-width: 768px)": {
+      display: "none",
+    },
+  },
+  leftContent: {
+    maxWidth: "400px",
+    textAlign: "center",
+  },
+  brandTitle: {
+    fontSize: "48px",
+    fontWeight: "700",
+    marginBottom: "16px",
+    color: tokens.colorNeutralForegroundOnBrand,
+  },
+  brandSubtitle: {
+    fontSize: "18px",
+    fontWeight: "400",
+    opacity: 0.9,
+    color: tokens.colorNeutralForegroundOnBrand,
+  },
+  rightSection: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center", // Center vertically
+    justifyContent: "center",
+    backgroundColor: tokens.colorNeutralBackground1,
+    padding: "40px",
+    position: "relative", // Needed for absolute positioning of exit button
+    "@media (max-width: 768px)": {
+      paddingTop: "40px", // Reset padding
+      paddingBottom: "40px",
+    },
+  },
+  exitButton: {
+    position: "absolute",
+    top: "24px",
+    right: "24px",
+    zIndex: 10,
+    color: tokens.colorNeutralForeground1,
+    ":hover": {
+      color: tokens.colorNeutralForeground1Hover,
+    },
+    "@media (max-width: 768px)": {
+      top: "16px",
+      right: "16px",
+    },
+  },
+  formContainer: {
+    width: "100%",
+    maxWidth: "400px",
+  },
+  card: {
+    padding: "32px",
+    borderRadius: "12px",
+    boxShadow: `0 2px 8px ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+  },
+  formTitle: {
+    fontSize: "32px",
+    fontWeight: "700",
+    marginBottom: "8px",
+    color: tokens.colorNeutralForeground1,
+    textAlign: "center",
+  },
+  formSubtitle: {
+    fontSize: "14px",
+    color: tokens.colorNeutralForeground3,
+    marginBottom: "32px",
+    textAlign: "center",
+  },
+  formField: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginBottom: "16px",
+  },
+  inputField: {
+    width: "100%",
+  },
+  passwordContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+  passwordInput: {
+    flex: 1,
+  },
+  rememberMe: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    marginBottom: "24px",
+    fontSize: "14px",
+    color: tokens.colorNeutralForeground2,
+  },
+  signInButton: {
+    width: "100%",
+    height: "40px",
+    fontSize: "16px",
+    fontWeight: "600",
+    marginBottom: "16px",
+  },
+  divider: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "16px",
+    color: tokens.colorNeutralForeground3,
+  },
+  dividerLine: {
+    flex: 1,
+    height: "1px",
+    backgroundColor: tokens.colorNeutralStroke2,
+  },
+  socialButton: {
+    width: "100%",
+    marginBottom: "8px",
+  },
+  signUp: {
+    textAlign: "center",
+    fontSize: "14px",
+    color: tokens.colorNeutralForeground2,
+    marginTop: "24px",
+  },
+  signUpLink: {
+    color: tokens.colorBrandForeground1,
+    fontWeight: "600",
+    cursor: "pointer",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+});
+
+export default function SignInPage() {
+  const styles = useStyles();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      // Simulate API call
+      if (!email || !password) {
+        setError("Please enter both email and password");
+        return;
+      }
+
+      // Simulate successful sign-in
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Store user data (in a real app, this would be a proper auth token)
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("rememberMe", rememberMe.toString());
+
+      // Redirect to chat
+      router.push("/");
+    } catch {
+      setError("Sign in failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.leftSection}>
+        <div className={styles.leftContent}>
+          <h1 className={styles.brandTitle}>AI Chatbot</h1>
+          <p className={styles.brandSubtitle}>
+            Intelligent conversations at your fingertips. Sign in to get
+            started.
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.rightSection}>
+        <Button
+            icon={<Dismiss24Regular />}
+            appearance="subtle"
+            className={styles.exitButton}
+            onClick={() => router.push("/")}
+            aria-label="Exit to home"
+        />
+        <div className={styles.formContainer}>
+          <div className={styles.card}>
+            <h2 className={styles.formTitle}>Sign In</h2>
+            <p className={styles.formSubtitle}>
+              Use your email to sign in to your account
+            </p>
+
+            <form onSubmit={handleSignIn}>
+              <div className={styles.formField}>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  className={styles.inputField}
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  contentBefore={<Mail24Regular />}
+                  size="large"
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  className={styles.inputField}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  contentAfter={
+                    <Button
+                      appearance="subtle"
+                      icon={
+                        showPassword ? <EyeOff24Regular /> : <Eye24Regular />
+                      }
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ minWidth: "32px", padding: "0" }}
+                    />
+                  }
+                  size="large"
+                />
+              </div>
+
+              <div className={styles.rememberMe}>
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={{ cursor: "pointer" }}
+                />
+                <label htmlFor="rememberMe" style={{ cursor: "pointer" }}>
+                  Remember me
+                </label>
+              </div>
+
+              {error && (
+                <div
+                  style={{
+                    color: tokens.colorPaletteRedForeground1,
+                    marginBottom: "16px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                appearance="primary"
+                className={styles.signInButton}
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
+              </Button>
+            </form>
+
+            <div className={styles.divider}>
+              <div className={styles.dividerLine} />
+              <span>or</span>
+              <div className={styles.dividerLine} />
+            </div>
+
+            <Button
+              appearance="secondary"
+              className={styles.socialButton}
+              disabled={isLoading}
+            >
+              Continue with Microsoft
+            </Button>
+            <Button
+              appearance="secondary"
+              className={styles.socialButton}
+              disabled={isLoading}
+            >
+              Continue with Google
+            </Button>
+
+            <div className={styles.signUp}>
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className={styles.signUpLink}>
+                Create one
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/signup/page.tsx">
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Button,
+  Input,
+  Label,
+  makeStyles,
+  tokens,
+} from "@fluentui/react-components";
+import {
+  Mail24Regular,
+  Eye24Regular,
+  EyeOff24Regular,
+  Person24Regular,
+  Dismiss24Regular,
+} from "@fluentui/react-icons";
+
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    minHeight: "100vh", // Allow growing
+    width: "100%",
+  },
+  leftSection: {
+    flex: 1,
+    background: `linear-gradient(135deg, ${tokens.colorBrandBackground} 0%, ${tokens.colorBrandBackgroundHover} 100%)`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    color: tokens.colorNeutralForegroundOnBrand,
+    padding: "40px",
+    "@media (max-width: 768px)": {
+      display: "none",
+    },
+  },
+  leftContent: {
+    maxWidth: "400px",
+    textAlign: "center",
+  },
+  brandTitle: {
+    fontSize: "48px",
+    fontWeight: "700",
+    marginBottom: "16px",
+    color: tokens.colorNeutralForegroundOnBrand,
+  },
+  brandSubtitle: {
+    fontSize: "18px",
+    fontWeight: "400",
+    opacity: 0.9,
+    color: tokens.colorNeutralForegroundOnBrand,
+  },
+  rightSection: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center", // Center vertically
+    justifyContent: "center",
+    backgroundColor: tokens.colorNeutralBackground1,
+    padding: "40px",
+    position: "relative", // Needed for absolute positioning of exit button
+    "@media (max-width: 768px)": {
+      paddingTop: "40px", // Reset padding
+      paddingBottom: "40px",
+    },
+  },
+  exitButton: {
+    position: "absolute",
+    top: "24px",
+    right: "24px",
+    zIndex: 10,
+    color: tokens.colorNeutralForeground1,
+    ":hover": {
+      color: tokens.colorNeutralForeground1Hover,
+    },
+    "@media (max-width: 768px)": {
+      top: "16px",
+      right: "16px",
+    },
+  },
+  formContainer: {
+    width: "100%",
+    maxWidth: "400px",
+  },
+  card: {
+    padding: "32px",
+    borderRadius: "12px",
+    boxShadow: `0 2px 8px ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+  },
+  formTitle: {
+    fontSize: "32px",
+    fontWeight: "700",
+    marginBottom: "8px",
+    color: tokens.colorNeutralForeground1,
+    textAlign: "center",
+  },
+  formSubtitle: {
+    fontSize: "14px",
+    color: tokens.colorNeutralForeground3,
+    marginBottom: "32px",
+    textAlign: "center",
+  },
+  formField: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginBottom: "16px",
+  },
+  inputField: {
+    width: "100%",
+  },
+  termsCheckbox: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "8px",
+    marginBottom: "24px",
+    fontSize: "13px",
+    color: tokens.colorNeutralForeground2,
+    lineHeight: "1.4",
+  },
+  signUpButton: {
+    width: "100%",
+    height: "40px",
+    fontSize: "16px",
+    fontWeight: "600",
+    marginBottom: "16px",
+  },
+  divider: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "16px",
+    color: tokens.colorNeutralForeground3,
+  },
+  dividerLine: {
+    flex: 1,
+    height: "1px",
+    backgroundColor: tokens.colorNeutralStroke2,
+  },
+  socialButton: {
+    width: "100%",
+    marginBottom: "8px",
+  },
+  signIn: {
+    textAlign: "center",
+    fontSize: "14px",
+    color: tokens.colorNeutralForeground2,
+    marginTop: "24px",
+  },
+  signInLink: {
+    color: tokens.colorBrandForeground1,
+    fontWeight: "600",
+    cursor: "pointer",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+});
+
+export default function SignUpPage() {
+  const styles = useStyles();
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      // Validate form
+      if (
+        !formData.name ||
+        !formData.email ||
+        !formData.password ||
+        !formData.confirmPassword
+      ) {
+        setError("Please fill in all fields");
+        setIsLoading(false);
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError("Passwords do not match");
+        setIsLoading(false);
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setError("Password must be at least 8 characters");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!agreeTerms) {
+        setError("You must agree to the terms and conditions");
+        setIsLoading(false);
+        return;
+      }
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Store user data
+      localStorage.setItem("userName", formData.name);
+      localStorage.setItem("userEmail", formData.email);
+
+      // Redirect to chat
+      router.push("/");
+    } catch {
+      setError("Sign up failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.leftSection}>
+        <div className={styles.leftContent}>
+          <h1 className={styles.brandTitle}>AI Chatbot</h1>
+          <p className={styles.brandSubtitle}>
+            Join our community and start having intelligent conversations today.
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.rightSection}>
+        <Button
+            icon={<Dismiss24Regular />}
+            appearance="subtle"
+            className={styles.exitButton}
+            onClick={() => router.push("/")}
+            aria-label="Exit to home"
+        />
+        <div className={styles.formContainer}>
+          <div className={styles.card}>
+            <h2 className={styles.formTitle}>Create Account</h2>
+            <p className={styles.formSubtitle}>
+              Sign up to get started with AI Chatbot
+            </p>
+
+            <form onSubmit={handleSignUp}>
+              <div className={styles.formField}>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  className={styles.inputField}
+                  type="text"
+                  placeholder="John Doe"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  contentBefore={<Person24Regular />}
+                  size="large"
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  className={styles.inputField}
+                  type="email"
+                  placeholder="name@example.com"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  contentBefore={<Mail24Regular />}
+                  size="large"
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  className={styles.inputField}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a password (min 8 characters)"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  contentAfter={
+                    <Button
+                      appearance="subtle"
+                      icon={
+                        showPassword ? <EyeOff24Regular /> : <Eye24Regular />
+                      }
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ minWidth: "32px", padding: "0" }}
+                    />
+                  }
+                  size="large"
+                />
+              </div>
+
+              <div className={styles.formField}>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  className={styles.inputField}
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  contentAfter={
+                    <Button
+                      appearance="subtle"
+                      icon={
+                        showConfirmPassword ? (
+                          <EyeOff24Regular />
+                        ) : (
+                          <Eye24Regular />
+                        )
+                      }
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      style={{ minWidth: "32px", padding: "0" }}
+                    />
+                  }
+                  size="large"
+                />
+              </div>
+
+              <div className={styles.termsCheckbox}>
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  style={{ cursor: "pointer", marginTop: "2px" }}
+                />
+                <label htmlFor="agreeTerms" style={{ cursor: "pointer" }}>
+                  I agree to the Terms of Service and Privacy Policy
+                </label>
+              </div>
+
+              {error && (
+                <div
+                  style={{
+                    color: tokens.colorPaletteRedForeground1,
+                    marginBottom: "16px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                appearance="primary"
+                className={styles.signUpButton}
+                disabled={isLoading}
+              >
+                {isLoading ? "Creating Account..." : "Create Account"}
+              </Button>
+            </form>
+
+            <div className={styles.divider}>
+              <div className={styles.dividerLine} />
+              <span>or</span>
+              <div className={styles.dividerLine} />
+            </div>
+
+            <Button
+              appearance="secondary"
+              className={styles.socialButton}
+              disabled={isLoading}
+            >
+              Sign up with Microsoft
+            </Button>
+            <Button
+              appearance="secondary"
+              className={styles.socialButton}
+              disabled={isLoading}
+            >
+              Sign up with Google
+            </Button>
+
+            <div className={styles.signIn}>
+              Already have an account?{" "}
+              <Link href="/signin" className={styles.signInLink}>
+                Sign in
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  height: 100dvh; /* Mobile viewport height fix */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+</file>
+
+<file path="app/layout.tsx">
+"use client";
+
+import type { Metadata } from "next";
+import { FluentProvider, webLightTheme } from "@fluentui/react-components";
+import "./globals.css";
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body>
+        <FluentProvider theme={webLightTheme}>{children}</FluentProvider>
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="app/page.tsx">
+import ChatInterface from "@/components/ChatInterface";
+
+export default function Home() {
+  return <ChatInterface />;
+}
+</file>
+
+<file path="components/ChatInterface.tsx">
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Button,
+  Input,
+  makeStyles,
+  tokens,
+  Spinner,
+  Avatar,
+  Text,
+} from "@fluentui/react-components";
+import {
+  Send24Regular,
+  Mic24Regular,
+  ChevronLeft24Regular,
+  ChevronRight24Regular,
+  Chat24Regular,
+  SignOut24Regular,
+  Navigation24Regular,
+  Sparkle24Filled,
+  PanelLeft24Regular,
+} from "@fluentui/react-icons";
+import ChatMessage from "./ChatMessage";
+
+const useStyles = makeStyles({
+  wrapper: {
+    display: "flex",
+    height: "100vh",
+    backgroundColor: tokens.colorNeutralBackground1,
+    position: "relative",
+    overflow: "hidden",
+  },
+  sidebar: {
+    display: "flex",
+    flexDirection: "column",
+    width: "260px",
+    borderRight: `1px solid ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    transition: "transform 0.3s ease, width 0.3s ease",
+    position: "relative",
+    zIndex: 100,
+    height: "100%",
+    "@media (max-width: 768px)": {
+      position: "absolute",
+      left: 0,
+      top: 0,
+      width: "85%",
+      maxWidth: "300px",
+      transform: "translateX(0)",
+      boxShadow: tokens.shadow64,
+      borderRight: "none",
+    },
+  },
+  sidebarCollapsed: {
+    width: "0px", // Fully hide on desktop when collapsed
+    overflow: "hidden",
+    borderRight: "none",
+    "@media (max-width: 768px)": {
+      transform: "translateX(-100%)",
+      width: "85%",
+    },
+  },
+  overlay: {
+    display: "none",
+    "@media (max-width: 768px)": {
+      display: "block",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      zIndex: 90,
+    },
+  },
+  mobileHeader: {
+    display: "none",
+    padding: "12px 16px",
+    // borderBottom: `1px solid ${tokens.colorNeutralStroke1}`, // Clean look, maybe no border
+    alignItems: "center",
+    gap: "12px",
+    backgroundColor: tokens.colorNeutralBackground1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 80,
+    "@media (max-width: 768px)": {
+      display: "flex",
+    },
+  },
+  mobileTitle: {
+    fontSize: "16px",
+    fontWeight: "600",
+    color: tokens.colorNeutralForeground1,
+  },
+  sidebarHeader: {
+    padding: "20px 16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  },
+  sidebarTitleRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sidebarTitle: {
+    fontSize: "20px",
+    fontWeight: "700",
+    color: tokens.colorNeutralForeground1,
+    lineHeight: "24px",
+  },
+  toggleButton: {
+    minWidth: "32px",
+    padding: "0",
+    marginLeft: "auto",
+  },
+  toggleButtonMain: {
+    position: "absolute",
+    top: "12px",
+    left: "12px",
+    zIndex: 85,
+    "@media (max-width: 768px)": {
+      display: "none",
+    },
+  },
+  sidebarContent: {
+    flex: 1,
+    padding: "16px 8px 16px 16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+  },
+  newChatButton: {
+    justifyContent: "center",
+    width: "100%",
+    backgroundColor: "#2563EB", // Blue color from image
+    color: "white",
+    ":hover": {
+      backgroundColor: "#1D4ED8",
+      color: "white",
+    },
+    ":active": {
+      backgroundColor: "#1E40AF",
+      color: "white",
+    },
+  },
+  recentSection: {
+    flex: 1,
+    padding: "0 16px",
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",
+  },
+  recentLabel: {
+    fontSize: "12px",
+    fontWeight: "600",
+    color: tokens.colorNeutralForeground3,
+    marginBottom: "8px",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+  },
+  recentItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "10px 12px",
+    cursor: "pointer",
+    borderRadius: tokens.borderRadiusMedium,
+    color: tokens.colorNeutralForeground1,
+    ":hover": {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+    },
+  },
+  recentItemText: {
+    fontSize: "14px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  sidebarFooter: {
+    padding: "16px",
+    borderTop: `1px solid ${tokens.colorNeutralStroke1}`,
+  },
+  signInButton: {
+    justifyContent: "flex-start",
+    width: "100%",
+    paddingLeft: "0",
+  },
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    position: "relative",
+    height: "100%",
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    backgroundColor: tokens.colorNeutralBackground1,
+  },
+  messagesContainer: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "24px",
+    display: "flex",
+    flexDirection: "column",
+    "@media (max-width: 768px)": {
+      padding: "12px",
+    },
+  },
+  inputContainer: {
+    padding: "16px 24px",
+    borderTop: `1px solid ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    display: "flex",
+    gap: "8px",
+    "@media (max-width: 768px)": {
+      padding: "12px",
+    },
+  },
+  input: {
+    flex: 1,
+  },
+  loadingContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "12px 16px",
+  },
+  // Welcome State Styles
+  welcomeContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+    padding: "24px",
+    maxWidth: "800px",
+    margin: "0 auto",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  welcomeIcon: {
+    width: "64px",
+    height: "64px",
+    backgroundColor: "#3B82F6", // Lighter blue
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "24px",
+    color: "white",
+  },
+  welcomeTitle: {
+    fontSize: "32px",
+    fontWeight: "600",
+    color: tokens.colorNeutralForeground1,
+    marginBottom: "8px",
+    textAlign: "center",
+    lineHeight: "1.3", // Increase line height for better readability when wrapping
+  },
+  welcomeSubtitle: {
+    fontSize: "16px",
+    color: tokens.colorNeutralForeground3,
+    marginBottom: "40px",
+    textAlign: "center",
+  },
+  welcomeInputContainer: {
+    width: "100%",
+    maxWidth: "700px",
+    position: "relative",
+    marginBottom: "32px",
+    "@media (max-width: 768px)": {
+        position: "absolute",
+        bottom: "80px", // Above suggestions
+        left: "0",
+        right: "0",
+        padding: "0 16px",
+        marginBottom: "0",
+        maxWidth: "100%",
+    }
+  },
+  welcomeInput: {
+    width: "100%",
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderRadius: "26px", // Match chatInputWrapper
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)", // Match chatInputWrapper
+    display: "flex",
+    alignItems: "center",
+    padding: "10px 24px", // Match chatInputWrapper
+    position: "relative",
+  },
+  welcomeInputField: {
+    flex: 1,
+    border: "none",
+    ":focus-within": {
+        border: "none",
+        outline: "none"
+    },
+    "& input": {
+        height: "48px", // Match chatInputWrapper inner height
+        border: "none",
+        fontSize: "16px",
+        ":focus": {
+            border: "none",
+            outline: "none"
+        }
+    }
+  },
+  welcomeMic: {
+    position: "absolute",
+    right: "12px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: tokens.colorNeutralForeground3,
+    cursor: "pointer",
+    "@media (max-width: 768px)": {
+        right: "24px", // Match the mobile padding fix
+    }
+  },
+  suggestionChips: {
+    display: "flex",
+    gap: "12px",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    "@media (max-width: 768px)": {
+        position: "fixed",
+        bottom: "160px",
+        left: "0",
+        right: "0",
+        paddingLeft: "20px",
+        paddingRight: "20px",
+        justifyContent: "flex-start",
+        flexWrap: "nowrap",
+        overflowX: "auto",
+        paddingBottom: "8px",
+        marginTop: "0",
+        zIndex: 99,
+        "::-webkit-scrollbar": {
+            display: "none"
+        }
+    }
+  },
+  suggestionChip: {
+    borderRadius: "16px",
+    padding: "8px 16px",
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
+    fontSize: "14px",
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+    ":hover": {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+    },
+  },
+  // Chat State Styles
+  chatContainer: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    paddingTop: "60px", // Space for mobile header or top spacing
+    "@media (min-width: 769px)": {
+        paddingTop: "0",
+    }
+  },
+  messagesList: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "24px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    maxWidth: "900px",
+    width: "100%",
+    margin: "0 auto",
+    boxSizing: "border-box",
+  },
+  chatInputContainer: {
+    padding: "24px",
+    maxWidth: "900px",
+    width: "100%",
+    margin: "0 auto",
+    boxSizing: "border-box",
+    position: "sticky", // Pin to bottom? Or fixed?
+    // If we want it to float above the bottom content, sticky is good if container scrolls.
+    // But mainContainer is flex column.
+    bottom: 0,
+    backgroundColor: tokens.colorNeutralBackground1, // Ensure background covers content behind
+    zIndex: 10,
+  },
+  chatInputWrapper: {
+    position: "relative",
+    width: "100%",
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderRadius: "26px", // Matches the reference image curve
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)", // Soft, floating shadow
+    display: "flex",
+    alignItems: "center",
+    padding: "10px 24px", // Generous padding
+  },
+  chatInput: {
+    flex: 1,
+    border: "none",
+    ":focus-within": {
+        border: "none",
+        outline: "none"
+    },
+    "& input": {
+        height: "48px",
+        border: "none",
+        ":focus": {
+            border: "none",
+            outline: "none"
+        }
+    }
+  },
+});
+
+interface Message {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+}
+
+export default function ChatInterface() {
+  const styles = useStyles();
+  const router = useRouter();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Handle initial sidebar state based on screen width
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
+
+  const handleSend = async (text: string = inputValue) => {
+    if (!text.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: text,
+      isUser: true,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setIsLoading(true);
+
+    // Simulate AI response
+    setTimeout(() => {
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: `I received your message: "${userMessage.text}". This is a demo response.`,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, botMessage]);
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
+    setInputValue("");
+    if (window.innerWidth <= 768) {
+        setSidebarOpen(false);
+    }
+  };
+
+  const suggestions = [
+    "Explain a complex topic",
+    "Help me write an email",
+    "Generate creative ideas",
+    "Debug my code"
+  ];
+
+  const RecentChats = () => (
+    <div className={styles.recentSection}>
+        <div className={styles.recentLabel}>Recent</div>
+        {[
+            "Product design discussion",
+            "Code review feedback",
+            "Marketing strategy ideas",
+            "Data analysis questions"
+        ].map((chat, i) => (
+            <div key={i} className={styles.recentItem}>
+                <Chat24Regular fontSize={16} />
+                <span className={styles.recentItemText}>{chat}</span>
+            </div>
+        ))}
+    </div>
+  );
+
+  return (
+    <div className={styles.wrapper}>
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className={styles.overlay}
+          onClick={() => setSidebarOpen(false)}
+          role="presentation"
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`${styles.sidebar} ${
+          !sidebarOpen ? styles.sidebarCollapsed : ""
+        }`}
+      >
+        <div className={styles.sidebarHeader}>
+          <div className={styles.sidebarTitleRow}>
+            <div>
+                <div className={styles.sidebarTitle}>Citizen</div>
+                <div className={styles.sidebarTitle}>Impact</div>
+            </div>
+            <Button
+                icon={<PanelLeft24Regular />}
+                appearance="subtle"
+                onClick={() => setSidebarOpen(false)}
+                className={styles.toggleButton}
+            />
+          </div>
+          <Button
+            className={styles.newChatButton}
+            icon={<Sparkle24Filled />} // Using Sparkle as "New Chat" icon or similar
+            onClick={handleNewChat}
+            size="large"
+          >
+            New Chat
+          </Button>
+        </div>
+
+        <RecentChats />
+
+        <div className={styles.sidebarFooter}>
+          <Button
+            appearance="subtle"
+            icon={<SignOut24Regular />}
+            onClick={() => router.push("/signin")}
+            className={styles.signInButton}
+          >
+            Sign In
+          </Button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className={styles.mainContainer}>
+        {/* Mobile Header (visible only on mobile) */}
+        <div className={styles.mobileHeader}>
+            <Button
+              appearance="subtle"
+              icon={<Navigation24Regular />}
+              onClick={() => setSidebarOpen(true)}
+            />
+            <span style={{ fontWeight: 600 }}>Citizen Impact</span>
+        </div>
+
+        {/* Desktop Sidebar Toggle (visible when sidebar is collapsed) */}
+        {!sidebarOpen && (
+            <Button
+                icon={<PanelLeft24Regular />}
+                appearance="subtle"
+                onClick={() => setSidebarOpen(true)}
+                className={styles.toggleButtonMain}
+            />
+        )}
+
+        {messages.length === 0 ? (
+            // Welcome State
+            <div className={styles.welcomeContainer}>
+                <div className={styles.welcomeIcon}>
+                    <Sparkle24Filled style={{ width: 32, height: 32 }} />
+                </div>
+                <h1 className={styles.welcomeTitle}>How can I help you today?</h1>
+                <p className={styles.welcomeSubtitle}>Ask me anything or try one of the suggestions below</p>
+                
+                <div className={styles.welcomeInputContainer}>
+                    <div className={styles.welcomeInput}>
+                        <Input
+                            placeholder="Ask anything..."
+                            className={styles.welcomeInputField}
+                            value={inputValue}
+                            onChange={(e, data) => setInputValue(data.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleSend();
+                                }
+                            }}
+                        />
+                        <Mic24Regular className={styles.welcomeMic} />
+                    </div>
+                </div>
+
+                <div className={styles.suggestionChips}>
+                    {suggestions.map((s) => (
+                        <button 
+                            key={s} 
+                            className={styles.suggestionChip}
+                            onClick={() => handleSend(s)}
+                        >
+                            {s}
+                        </button>
+                    ))}
+                </div>
+            </div>
+        ) : (
+            // Chat State
+            <div className={styles.chatContainer}>
+                <div className={styles.messagesList}>
+                    {messages.map((message) => (
+                    <ChatMessage
+                        key={message.id}
+                        message={message.text}
+                        isUser={message.isUser}
+                        timestamp={message.timestamp}
+                    />
+                    ))}
+                    {isLoading && (
+                    <div className={styles.loadingContainer}>
+                        <Spinner size="tiny" />
+                        <span>AI is thinking...</span>
+                    </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                </div>
+
+                <div className={styles.chatInputContainer}>
+                    <div className={styles.chatInputWrapper}>
+                        <Input
+                            className={styles.chatInput}
+                            placeholder="Ask a follow up..."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            disabled={isLoading}
+                        />
+                        {inputValue.trim() ? (
+                            <Button
+                                appearance="transparent"
+                                icon={<Send24Regular />}
+                                onClick={() => handleSend()}
+                                disabled={isLoading}
+                            />
+                        ) : (
+                            <Button
+                                appearance="transparent"
+                                icon={<Mic24Regular />}
+                                disabled={isLoading}
+                            />
+                        )}
+                    </div>
+                </div>
+            </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/ChatMessage.tsx">
+import { useState, useEffect } from "react";
+import { Avatar, makeStyles, tokens } from "@fluentui/react-components";
+import { Person24Regular } from "@fluentui/react-icons";
+
+const useStyles = makeStyles({
+  messageContainer: {
+    display: "flex",
+    gap: "12px",
+    marginBottom: "24px", // Increased spacing
+    width: "100%",
+  },
+  userMessage: {
+    flexDirection: "row-reverse",
+    alignItems: "flex-start",
+  },
+  botMessage: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  messageContent: {
+    maxWidth: "80%",
+    lineHeight: "1.6",
+    fontSize: "16px",
+    "@media (max-width: 768px)": {
+      maxWidth: "90%",
+    },
+  },
+  userContent: {
+    // No background for user content text itself if we use the avatar as the bubble?
+    // Wait, the image shows the user message as a blue circle with text "hi" inside?
+    // OR is that the avatar?
+    // "Blue circle with white text (initials or "hi")" -> That looks like an Avatar or a very small bubble.
+    // If the user types a long message, it should probably be a bubble.
+    // Let's assume standard chat: User bubble (Blue), Bot text (Plain).
+    // The image shows "hi" inside a blue circle. That might be the message itself if it's short, or an avatar.
+    // But there is NO text outside the blue circle. So the blue circle IS the message container?
+    // Let's look closely at the image.
+    // The user message is JUST a blue circle with "hi".
+    // The user message is "ok" in another blue circle.
+    // It seems the user message IS the bubble.
+    backgroundColor: "#2563EB", // Blue
+    color: "white",
+    padding: "12px 20px",
+    borderRadius: "24px",
+    borderTopRightRadius: "4px", // Optional styling for chat bubble
+  },
+  botContent: {
+    backgroundColor: "transparent",
+    color: tokens.colorNeutralForeground1,
+    padding: "0", // No padding for document-like look
+  },
+  avatar: {
+    // If we want an avatar for the bot? The image shows NO avatar for the bot.
+    // Just text.
+  },
+});
+
+interface ChatMessageProps {
+  message: string;
+  isUser: boolean;
+  timestamp?: Date;
+}
+
+export default function ChatMessage({ message, isUser }: ChatMessageProps) {
+  const styles = useStyles();
+  const [displayedText, setDisplayedText] = useState(isUser ? message : "");
+
+  useEffect(() => {
+    if (isUser) return;
+
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      if (currentIndex < message.length) {
+        setDisplayedText((prev) => prev + message[currentIndex]);
+        currentIndex++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 20); // Adjust speed here (20ms per char)
+
+    return () => clearInterval(intervalId);
+  }, [message, isUser]);
+
+  if (isUser) {
+    return (
+      <div className={`${styles.messageContainer} ${styles.userMessage}`}>
+        {/* User Message Bubble */}
+        <div className={`${styles.messageContent} ${styles.userContent}`}>
+            {message}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${styles.messageContainer} ${styles.botMessage}`}>
+      {/* Bot Message - No Avatar, Just Text */}
+      <div className={`${styles.messageContent} ${styles.botContent}`}>
+        {displayedText}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path=".dockerignore">
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules
+#package-lock.json
+.pnp
+.pnp.js
+
+# Testing
+coverage
+.pytest_cache
+
+# Next.js
+.next
+out
+.env
+
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Documentation
+README.md
+docs
+
+# Development
+.eslintcache
+tsconfig.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+**/node_modules
+</file>
+
+<file path="Dockerfile">
+# Multi-stage build for optimized Next.js container
+
+# Stage 1: Build
+FROM node:25.2.1-alpine3.22 AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build Next.js application
+RUN npm run build
+
+# Stage 2: Runtime
+FROM node:25.2.1-alpine3.22
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --only=production
+
+# Copy built application from builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
+
+# Set user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start application
+CMD ["npm", "start"]
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="next-env.d.ts">
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+import "./.next/dev/types/routes.d.ts";
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: "standalone",
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="package.json">
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fluentui/react-components": "^9.72.7",
+    "@fluentui/react-icons": "^2.0.315",
+    "next": "16.0.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.3",
+    "tailwindcss": "^4",
+    "typescript": "5.9.3"
+  }
+}
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Environment Variables & Local Validation
+
+This project uses [dotenv-safe](https://github.com/rolodato/dotenv-safe) for local environment variable validation. All required variables must be listed in `.env.example` and set in your `.env.local` file.
+
+When running locally (`npm run dev`, `npm run build`, or `npm run start`), `dotenv-safe` will check that all required variables are present and not empty. If any are missing, the process will exit with an error.
+
+**Steps:**
+
+1. Copy `.env.example` to `.env.local` and fill in the values:
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local and set your values
+   ```
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+For production/staging, set environment variables using your deployment platform (e.g., Azure App Service settings, CI/CD secrets). `.env.local` is only used for local development and is ignored by git.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+</files>

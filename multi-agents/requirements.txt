@@ -1,0 +1,10 @@
+# Pacotes Core com extras do Azure para garantir compatibilidade
+promptflow[azure]
+promptflow-tools
+
+# Bibliotecas auxiliares
+python-dotenv
+azure-search-documents
+azure-core
+azure-identity
+openai

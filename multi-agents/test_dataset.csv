@@ -1,0 +1,5 @@
+user_query,expected_intent,expected_candidate
+"Qual a posição da Maria Silva sobre educação?",candidate_position_query,Maria Silva
+"Compare Maria e João na saúde",candidate_comparison,Maria Silva, Joao Pereira
+"Fale sobre meio ambiente",topic_exploration,
+"Quem vai ganhar a copa?",out_of_scope,

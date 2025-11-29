@@ -1,0 +1,12 @@
+# Ignore sensitive configuration files from Docker build context
+backend/settings.json
+multi-agents/connections.json
+multi-agents/connection.yaml
+
+# Node/Next artifacts
+frontend/.next
+frontend/node_modules
+
+# Python artifacts
+__pycache__
+*.pyc
